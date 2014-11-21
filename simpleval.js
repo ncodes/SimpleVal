@@ -145,7 +145,7 @@ SimpleVal.prototype.fails = function(){
 
 			// convert fails to their respective messages
 			_.each(this.failsToMsgs(failed), function(m){
-				fails.push(m);
+				fails.push({ field: field, msg: m });
 			});
 		}
 	}, this);
