@@ -1,0 +1,1 @@
+Simple validation inspired by Laravel's validation API. 
