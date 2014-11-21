@@ -2,9 +2,9 @@
   "author": "Kennedy Idialu",
   "name": "simpleval",
   "description": "Laravel style validation",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
-    "url": ""
+    "url": "https://github.com/ncodes/SimpleVal.git"
   },
   "main": "./simpleval",
   "dependencies": {
