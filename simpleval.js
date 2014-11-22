@@ -13,6 +13,7 @@ function SimpleVal(data, rules, msgs){
 	this.data = data || {};
 	this.rules = rules || {};
 	this.msgs = msgs || {};
+	this.extraData = {};
 
 	// make supported rules to thier methods
 	this.ruleMethodMap = {
@@ -24,9 +25,20 @@ function SimpleVal(data, rules, msgs){
 			return (val.length <= length) ? true : false;
 		},
 		btw: validator.isLength,
-		email: validator.isEmail
+		email: validator.isEmail,
+		inArr: validator.isIn
 	}
 }
+
+
+/**
+ * Some validation rule require additional data to perform validation
+ * checks. This methods store additional data
+ */ 
+SimpleVal.prototype.addData = function(name, data){
+	this.extraData[name] = data;
+}
+
 
 /**
  * Parse a rule declaration and return an object containing
@@ -91,6 +103,14 @@ SimpleVal.prototype.applyRules = function(field, val, rules){
 		if (rule.name == 'email' && val.length > 0){
 			var method = this.ruleMethodMap[rule.name];
 			if (!method(val, parseInt(rule.params[0]))){
+				errors.push(field + '.' + rule.name);
+			}
+		}
+
+		// inArr
+		if (rule.name == 'inArr' && val.length > 0){
+			var method = this.ruleMethodMap[rule.name];
+			if (!method(val, this.extraData[rule.params[0]])){
 				errors.push(field + '.' + rule.name);
 			}
 		}
