@@ -14,6 +14,7 @@ function SimpleVal(data, rules, msgs){
 	this.rules = rules || {};
 	this.msgs = msgs || {};
 	this.extraData = {};
+	this.customMethods = {};
 
 	// make supported rules to thier methods
 	this.ruleMethodMap = {
@@ -36,6 +37,13 @@ function SimpleVal(data, rules, msgs){
 	this.ruleMethodMap['required!'] = this.ruleMethodMap['required'];
 }
 
+
+/**
+ * Add a custom method
+ */
+SimpleVal.prototype.addMethod = function(rule, func){
+	this.customMethods[rule] = func;
+}
 
 /**
  * Some validation rule require additional data to perform validation
@@ -75,7 +83,7 @@ SimpleVal.prototype.applyRules = function(field, val, rules){
 	_.each(rules, function(rule){
 		
 		if (ignore) return;
-		
+
 		// required check
 		if (rule.name == 'required'){
 			var method = this.ruleMethodMap[rule.name];
@@ -130,6 +138,14 @@ SimpleVal.prototype.applyRules = function(field, val, rules){
 		if (rule.name == 'inArr' && val.length > 0){
 			var method = this.ruleMethodMap[rule.name];
 			if (!method(val, this.extraData[rule.params[0]])){
+				errors.push(field + '.' + rule.name);
+			}
+		}
+
+		// custom
+		if (_.contains(Object.keys(this.customMethods), rule.name)){
+			var method = this.customMethods[rule.name];
+			if (method(val, this.extraData)){
 				errors.push(field + '.' + rule.name);
 			}
 		}
