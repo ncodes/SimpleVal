@@ -17,7 +17,11 @@ function SimpleVal(data, rules, msgs){
 
 	// make supported rules to thier methods
 	this.ruleMethodMap = {
-		required: validator.isNull,
+
+		required: function checkEmptiness(str){
+			return (validator.isNull(str) || str.length === 0) ? true : false;
+		},
+
 		min: function(val, length){
 			return (val.length >= length) ? true : false;
 		},
