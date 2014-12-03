@@ -31,7 +31,9 @@ function SimpleVal(data, rules, msgs){
 		btw: validator.isLength,
 		email: validator.isEmail,
 		inArr: validator.isIn
-	}
+	};
+
+	this.ruleMethodMap['required!'] = this.ruleMethodMap['required'];
 }
 
 
@@ -68,14 +70,27 @@ SimpleVal.prototype.parseRuleDeclaration = function(rd){
 SimpleVal.prototype.applyRules = function(field, val, rules){
 
 	var errors = [];
+	var ignore = false;
 
 	_.each(rules, function(rule){
+		
+		if (ignore) return;
 		
 		// required check
 		if (rule.name == 'required'){
 			var method = this.ruleMethodMap[rule.name];
 			if (method(val)){
 				errors.push(field + '.' + rule.name);
+			}
+		}
+
+		// important 'required' stops applying rules for this field is it matches
+		if (rule.name == 'required!'){
+			var method = this.ruleMethodMap[rule.name];
+			if (method(val)){
+				errors.push(field + '.' + rule.name);
+				ignore = true;
+				return;
 			}
 		}
 
